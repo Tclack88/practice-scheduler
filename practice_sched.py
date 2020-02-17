@@ -44,7 +44,7 @@ def Practice():
             weights[i]= largest - weights[i]
                 
         weights = np.delete(weights,recent)
-        print(choices)
+        #print(choices)
         del choices[recent]
         if len(choices) == 0:
             print("You have nothing to practice, or perhaps your list is empty\n (or you have just 1 item) \n (You don't need a practice manager for just one item bruh ;] ")
@@ -69,7 +69,11 @@ def Practice():
             Menu()
             exit(0)
         if decision == 'c':
-            newnote = input("Enter notes to help for next time(e.g. where you last left off): ")
+            newnote = input("Enter notes to help for next time \n
+                    (e.g. where you last left off): ")
+            if newnote == '':
+                print("\nNo new notes entered, keeping old notes")
+                newnote = notes[index]
                 
 
     with open('schedule.csv') as infile, open('tempcsvfile.csv','w') as outfile:
