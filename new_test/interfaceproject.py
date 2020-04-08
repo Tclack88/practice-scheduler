@@ -3,6 +3,8 @@
 import tkinter as tk
 import sys
 import random
+from practice_sched import Schedule
+s = Schedule()
 
 win = tk.Tk()
 win.title("Mikayla Smells")
@@ -15,23 +17,21 @@ def add():
     add_button.pack_forget()
     PracticeButton.pack_forget()
     def enter():
-        title = task_title.get()
-        print(repr(title))
+        task = task_entry.get()
+        notes = task_notes.get('1.0', tk.END)
+        s.add(task,notes)
 
-        text = task_text.get('1.0', tk.END)
-        print(repr(text))
-
-        task_title.delete(0,tk.END)
-        task_title.destroy()
-        task_text.destroy()
+        task_entry.delete(0,tk.END)
+        task_entry.destroy()
+        task_notes.destroy()
         EnterButton.destroy()
         add_button.pack(side=tk.LEFT)
         PracticeButton.pack(side=tk.LEFT)
 
-    task_title = tk.Entry(text='title', width=50)
-    task_title.pack()
-    task_text = tk.Text()
-    task_text.pack()
+    task_entry = tk.Entry(text='task', width=50)
+    task_entry.pack()
+    task_notes = tk.Text()
+    task_notes.pack()
     EnterButton = tk.Button(menu, text="Enter", command=enter)
     EnterButton.pack()
 
@@ -40,7 +40,16 @@ def practice():
     PracticeButton.pack_forget()
     def complete():
         print('task completed!')
+        updated_notes = notes.get('1.0',tk.END)
+        practice_item.notes = updated_notes
+        practice_item.time = s.now()
+        print(practice_item.index)
+        s.storage.iloc[practice_item.index] = practice_item
+        s.save()
+        print(practice_item)
+        print(practice_item)
         task.destroy()
+        notes.destroy()
         complete_button.pack_forget()
         cancel_button.pack_forget()
         add_button.pack(side=tk.LEFT)
@@ -48,6 +57,7 @@ def practice():
     def cancel():
         print('task cancelled :[')
         task.destroy()
+        notes.destroy()
         complete_button.pack_forget()
         cancel_button.pack_forget()
         add_button.pack(side=tk.LEFT)
@@ -58,9 +68,14 @@ def practice():
     complete_button.pack(side=tk.LEFT)
     cancel_button.pack(side=tk.LEFT)
         
-        
-    task = tk.Label(text=f'{random.random()}')
+    practice_item = s.practice()
+    print(practice_item)
+    task = tk.Label(text=practice_item.task.to_string(index=False), wraplength=500)
+    notes = tk.Text()
+    notes.insert('1.0', practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
+    # ^ janky
     task.pack()
+    notes.pack()
 
 def exit():
     print('exit button pressed')
