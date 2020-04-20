@@ -56,8 +56,12 @@ def practice():
         PracticeButton.pack(side=tk.LEFT)
     def cancel():
         print('task cancelled :[')
-        task.destroy()
-        notes.destroy()
+        try:
+            task.destroy()
+            notes.destroy()
+        except NameError:
+            invalid.pack_forget()
+            pass
         complete_button.pack_forget()
         cancel_button.pack_forget()
         add_button.pack(side=tk.LEFT)
@@ -69,13 +73,18 @@ def practice():
     cancel_button.pack(side=tk.LEFT)
         
     practice_item = s.practice()
-    print(practice_item)
-    task = tk.Label(text=practice_item.task.to_string(index=False), wraplength=500)
-    notes = tk.Text()
-    notes.insert('1.0', practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
-    # ^ janky
-    task.pack()
-    notes.pack()
+    if practice_item is not None: # i.e. not none
+        print(practice_item)
+        task = tk.Label(text=practice_item.task.to_string(index=False), wraplength=500)
+        notes = tk.Text()
+        notes.insert('1.0', practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
+        # ^ janky
+        task.pack()
+        notes.pack()
+    else:
+        add_button.pack_forget()
+        complete_button.pack_forget()
+        invalid.pack()
 
 def exit():
     print('exit button pressed')
@@ -92,6 +101,8 @@ menu.pack()
 
 add_frame = tk.LabelFrame(master=win, text='add frame')
 add_frame.pack()
+
+invalid = tk.Label(text='Not enough items to practice, add more and/or try again a different day')
 
 exit_button = tk.Button(win,text='Exit',command=exit)
 exit_button.pack(side=tk.BOTTOM)
