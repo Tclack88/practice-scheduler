@@ -19,7 +19,7 @@ In other words, new things are given emphasis because they're not as "ingrained"
 
 - Multiple projects can be scheduled
 
-- An interface
-
+[x] An interface
+-tKinter GUI created (thinking of adding one for pyqt to allow drag and drop capability
 
 (NOTE: I wrote this before I learned pandas, so this can probably be vastly improved)
