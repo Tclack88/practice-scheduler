@@ -17,9 +17,12 @@ In other words, new things are given emphasis because they're not as "ingrained"
 
 ## Hopes for the future:
 
-- Multiple projects can be scheduled
+[ ] Multiple projects can be scheduled
 
 [x] An interface
 -tKinter GUI created (thinking of adding one for pyqt to allow drag and drop capability
 
-(NOTE: I wrote this before I learned pandas, so this can probably be vastly improved)
+~~(NOTE: I wrote this before I learned pandas, so this can probably be vastly improved)~~
+^(pandas incorporated in tkinter)
+
+[ ] Improved interface with image drag and drop capabilities (PyQt?)
