@@ -1,6 +1,7 @@
 # Scheduler
 
 A dumb, simple terminal-based python script for determining what to practice next
+EDIT: moderate GUI added
 
 ## some background
 
@@ -10,7 +11,7 @@ I used to do spaced-repition, but that's NOT what this is, because that can get 
 
 Items to be practiced are emphasized on two criteria:
 - It's been a while since you last practiced
-- This item doesn't have that many "repitions"
+- This item doesn't have that many "repetions"
 
 In other words, new things are given emphasis because they're not as "ingrained" as longer term stuff and stuff that hasn't been played in a while get's a weight in the selected practice item (which is chosen at random according to weights)
 
