@@ -85,7 +85,10 @@ class Ui_MainWindow(object):
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.notesLabel.setText(_translate("MainWindow", "Notes"))
         self.addImageButton.setText(_translate("MainWindow", "+  image"))
+        self.addButton.clicked.connect(self.addButtonClicked)
 
+    def addButtonClicked(self):
+        self.frame.show()
 
 if __name__ == "__main__":
     import sys
@@ -93,5 +96,6 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.frame.hide()
     MainWindow.show()
     sys.exit(app.exec_())
