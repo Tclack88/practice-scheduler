@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.itemLabel = QtWidgets.QLabel(self.frame)
         self.itemLabel.setGeometry(QtCore.QRect(10, 20, 41, 20))
         self.itemLabel.setObjectName("itemLabel")
-        self.itemBox = QtWidgets.QPlainTextEdit(self.frame)
+        self.itemBox = QtWidgets.QTextEdit(self.frame)
         self.itemBox.setGeometry(QtCore.QRect(50, 40, 501, 31))
         self.itemBox.setStyleSheet("overflow:scroll")
         self.itemBox.setInputMethodHints(QtCore.Qt.ImhNone)

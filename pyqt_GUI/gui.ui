@@ -100,7 +100,7 @@
       <string>Item</string>
      </property>
     </widget>
-    <widget class="QPlainTextEdit" name="itemBox">
+    <widget class="QTextEdit" name="itemBox">
      <property name="geometry">
       <rect>
        <x>50</x>
