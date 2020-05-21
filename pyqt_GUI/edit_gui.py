@@ -6,8 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy
@@ -63,103 +63,107 @@ class DragNDropBox(QWidget):
             event.ignore()
 
     def set_image(self, file_path):
-        #self.photoViewer.setPixmap(QPixmap(file_path))
-        self.photoViewer.setPixmap(QPixmap(file_path).scaledToWidth(400))#scaled(800,800,Qt.KeepAspectRatio))
-        self.photoViewer.setPixmap(QPixmap(file_path).scaled(200,200,Qt.KeepAspectRatio))
-        print(dir(self.photoViewer))
+        self.photoViewer.setPixmap(QPixmap(file_path))
         self.resize(self.photoViewer.sizeHint())
-        #print(self.photoViewer.sizeHint())
-        print(self.photoViewer.size())
-
-        #print(self.photoViewer.size()[0])
-        print('PARENT')
-        print(self.parent())
-
-       
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(640, 480)
-        MainWindow.setAutoFillBackground(True)
-        MainWindow.setStyleSheet("overflow:auto;")
+        MainWindow.setEnabled(True)
+        MainWindow.resize(672, 640)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setAutoFillBackground(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.addButton = QtWidgets.QPushButton(self.centralwidget)
-        self.addButton.setGeometry(QtCore.QRect(250, 20, 51, 25))
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.topButtonFrame = QtWidgets.QFrame(self.centralwidget)
+        self.topButtonFrame.setObjectName("topButtonFrame")
+        self.formLayout = QtWidgets.QFormLayout(self.topButtonFrame)
+        self.formLayout.setObjectName("formLayout")
+        self.addButton = QtWidgets.QPushButton(self.topButtonFrame)
         self.addButton.setObjectName("addButton")
-        self.practiceButton = QtWidgets.QPushButton(self.centralwidget)
-        self.practiceButton.setGeometry(QtCore.QRect(310, 20, 71, 25))
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.addButton)
+        self.practiceButton = QtWidgets.QPushButton(self.topButtonFrame)
         self.practiceButton.setObjectName("practiceButton")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.practiceButton)
+        self.verticalLayout.addWidget(self.topButtonFrame, 0, QtCore.Qt.AlignHCenter)
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(20, 50, 591, 401))
+        self.frame.setSizePolicy(sizePolicy)
+        self.frame.setMinimumSize(QtCore.QSize(400, 400))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
-        self.cancelButton = QtWidgets.QPushButton(self.frame)
-        self.cancelButton.setGeometry(QtCore.QRect(290, 0, 71, 25))
-        self.cancelButton.setObjectName("cancelButton")
-        self.completeButton = QtWidgets.QPushButton(self.frame)
-        self.completeButton.setGeometry(QtCore.QRect(200, 0, 81, 25))
-        self.completeButton.setObjectName("completeButton")
-        self.itemLabel = QtWidgets.QLabel(self.frame)
-        self.itemLabel.setGeometry(QtCore.QRect(10, 20, 41, 20))
-        self.itemLabel.setObjectName("itemLabel")
+        self.gridLayout = QtWidgets.QGridLayout(self.frame)
+        self.gridLayout.setObjectName("gridLayout")
         self.itemBox = QtWidgets.QTextEdit(self.frame)
-        self.itemBox.setGeometry(QtCore.QRect(50, 40, 501, 31))
-        self.itemBox.setStyleSheet("overflow:scroll")
+        self.itemBox.setMaximumSize(QtCore.QSize(16777215, 30))
         self.itemBox.setInputMethodHints(QtCore.Qt.ImhNone)
         self.itemBox.setObjectName("itemBox")
-        self.notesLabel = QtWidgets.QLabel(self.frame)
-        self.notesLabel.setGeometry(QtCore.QRect(10, 70, 51, 20))
-        self.notesLabel.setObjectName("notesLabel")
+        self.gridLayout.addWidget(self.itemBox, 1, 1, 1, 3)
+        self.cancelImageButton = QtWidgets.QPushButton(self.frame)
+        self.cancelImageButton.setMaximumSize(QtCore.QSize(30, 16777215))
+        self.cancelImageButton.setObjectName("cancelImageButton")
+        self.gridLayout.addWidget(self.cancelImageButton, 4, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.notesBox = QtWidgets.QTextEdit(self.frame)
-        self.notesBox.setGeometry(QtCore.QRect(50, 90, 501, 131))
+        sizePolicy.setHorizontalStretch(20)
+        self.notesBox.setSizePolicy(sizePolicy)
+        self.notesBox.setMaximumSize(QtCore.QSize(16777215, 200))
         self.notesBox.setObjectName("notesBox")
-
-        #self.imageWidget = QtWidgets.QWidget(self.frame)
-        self.imageWidget = DragNDropBox() # change class as defined above
-        self.imageWidget.setGeometry(QtCore.QRect(220, 230, 150, 150))
-        self.imageWidget.setGeometry(QtCore.QRect(220, 230, 150, 150))
-        #self.imageWidget.setAcceptDrops(True)
-        #self.imageWidget.setAccessibleName("")
-        #self.imageWidget.setAutoFillBackground(False)
-        #self.imageWidget.setStyleSheet("border: 4px dashed #aaa;")
-        self.imageWidget.setObjectName("imageWidget")
-        self.imageWidget.setParent(self.frame)
-
+        self.gridLayout.addWidget(self.notesBox, 3, 1, 1, 3)
+        self.notesLabel = QtWidgets.QLabel(self.frame)
+        self.notesLabel.setObjectName("notesLabel")
+        self.gridLayout.addWidget(self.notesLabel, 3, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
+        self.cancelButton = QtWidgets.QPushButton(self.frame)
+        self.cancelButton.setObjectName("cancelButton")
+        self.gridLayout.addWidget(self.cancelButton, 0, 3, 1, 1, QtCore.Qt.AlignLeft)
+        self.imageBox = DragNDropBox()
+        self.imageBox.setParent(self.frame)
+        #self.imageBox.setMinimumSize(QtCore.QSize(200, 200))
+        #self.imageBox.setMaximumSize(QtCore.QSize(150, 150))
+        #self.imageBox.setBaseSize(QtCore.QSize(200,200))
+        #self.imageBox.baseSize(QtCore.QSize(200))
+        self.imageBox.setObjectName("imageBox")
+        self.gridLayout.addWidget(self.imageBox, 4, 2, 1, 2, QtCore.Qt.AlignVCenter)
+        self.itemLabel = QtWidgets.QLabel(self.frame)
+        self.itemLabel.setObjectName("itemLabel")
+        self.gridLayout.addWidget(self.itemLabel, 1, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.addImageButton = QtWidgets.QPushButton(self.frame)
-        self.addImageButton.setGeometry(QtCore.QRect(50, 220, 71, 25))
         self.addImageButton.setAutoDefault(False)
         self.addImageButton.setDefault(False)
         self.addImageButton.setFlat(False)
         self.addImageButton.setObjectName("addImageButton")
-        self.cancelImageButton = QtWidgets.QPushButton(self.frame)
-        self.cancelImageButton.setGeometry(QtCore.QRect(20, 220, 21, 25))
-        self.cancelImageButton.setObjectName("cancelImageButton")
-        self.frame.raise_()
-        self.addButton.raise_()
-        self.practiceButton.raise_()
+        self.gridLayout.addWidget(self.addImageButton, 4, 1, 1, 1, QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.completeButton = QtWidgets.QPushButton(self.frame)
+        self.completeButton.setObjectName("completeButton")
+        self.gridLayout.addWidget(self.completeButton, 0, 2, 1, 1, QtCore.Qt.AlignRight)
+        self.verticalLayout.addWidget(self.frame)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.addButton, self.practiceButton)
+        MainWindow.setTabOrder(self.practiceButton, self.completeButton)
+        MainWindow.setTabOrder(self.completeButton, self.cancelButton)
+        MainWindow.setTabOrder(self.cancelButton, self.itemBox)
+        MainWindow.setTabOrder(self.itemBox, self.notesBox)
+        MainWindow.setTabOrder(self.notesBox, self.cancelImageButton)
+        MainWindow.setTabOrder(self.cancelImageButton, self.addImageButton)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.addButton.setText(_translate("MainWindow", "Add"))
         self.practiceButton.setText(_translate("MainWindow", "Practice"))
-        self.cancelButton.setText(_translate("MainWindow", "Cancel"))
-        self.completeButton.setText(_translate("MainWindow", "Complete"))
-        self.itemLabel.setText(_translate("MainWindow", "Item"))
-        self.notesLabel.setText(_translate("MainWindow", "Notes"))
-        self.addImageButton.setText(_translate("MainWindow", "+  image"))
         self.cancelImageButton.setText(_translate("MainWindow", "x"))
+        self.notesLabel.setText(_translate("MainWindow", "Notes"))
+        self.cancelButton.setText(_translate("MainWindow", "Cancel"))
+        self.itemLabel.setText(_translate("MainWindow", "Item"))
+        self.addImageButton.setText(_translate("MainWindow", "+  image"))
+        self.completeButton.setText(_translate("MainWindow", "Complete"))
         self.addButton.clicked.connect(self.addButtonClicked)
         self.addImageButton.clicked.connect(self.imageButtonClicked)
         self.cancelImageButton.clicked.connect(self.cancelImageButtonClicked)
@@ -167,27 +171,33 @@ class Ui_MainWindow(object):
 
     def addButtonClicked(self):
         self.frame.show()
-        self.addButton.hide()
-        self.practiceButton.hide()
+        self.topButtonFrame.hide()
 
     def imageButtonClicked(self):
         self.addImageButton.hide()
-        self.imageWidget.show()
+        self.imageBox.show()
         self.cancelImageButton.show()
+        self.imageBox.resize(200,200)
 
     def cancelImageButtonClicked(self):
         self.cancelImageButton.hide()
-        self.imageWidget.hide()
+        self.imageBox.hide()
         self.addImageButton.show()
+        # TODO clear image
 
     def cancelButtonClicked(self):
         self.frame.hide()
-        self.addButton.show()
-        self.practiceButton.show()
+        self.topButtonFrame.show()
         self.cancelImageButtonClicked()
-        #TODO Connect to DB or Json
         self.itemBox.setText("")  # clear any items added
         self.notesBox.setText("") # clear any notes added
+
+    def completeButtonClicked(self):
+        #TODO Connect to DB or Json
+        self.topButtonFrame.show()
+        self.itemBox.setText("")  # clear any items added
+        self.notesBox.setText("") # clear any notes added
+        pass
 
 if __name__ == "__main__":
     import sys
@@ -196,7 +206,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.frame.hide()
-    ui.imageWidget.hide()
-    ui.cancelImageButton.hide()
+    ui.imageBox.hide()
     MainWindow.show()
     sys.exit(app.exec_())
