@@ -183,7 +183,12 @@ class Ui_MainWindow(object):
         self.cancelImageButton.hide()
         self.imageBox.hide()
         self.addImageButton.show()
-        # TODO clear image
+        # clear image:
+        self.imageBox = DragNDropBox()
+        self.imageBox.setParent(self.frame)
+        self.imageBox.setObjectName("imageBox")
+        self.gridLayout.addWidget(self.imageBox, 4, 2, 1, 2, QtCore.Qt.AlignVCenter)
+        self.imageBox.hide()
 
     def cancelButtonClicked(self):
         self.frame.hide()
@@ -207,5 +212,6 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     ui.frame.hide()
     ui.imageBox.hide()
+    ui.cancelImageButton.hide()
     MainWindow.show()
     sys.exit(app.exec_())
