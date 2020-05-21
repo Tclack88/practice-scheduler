@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 import sys, os
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
@@ -25,6 +25,7 @@ class ImageLabel(QLabel):
                 border: 4px dashed #aaa
             }
         ''')
+        self.setScaledContents(True)
 
     def setPixmap(self, image):
         super().setPixmap(image)
@@ -33,7 +34,7 @@ class ImageLabel(QLabel):
 class DragNDropBox(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(400, 400)
+        #self.resize(400, 400)
         self.setAcceptDrops(True)
         mainLayout = QVBoxLayout()
         self.photoViewer = ImageLabel()
@@ -62,7 +63,18 @@ class DragNDropBox(QWidget):
             event.ignore()
 
     def set_image(self, file_path):
-        self.photoViewer.setPixmap(QPixmap(file_path))
+        #self.photoViewer.setPixmap(QPixmap(file_path))
+        self.photoViewer.setPixmap(QPixmap(file_path).scaledToWidth(400))#scaled(800,800,Qt.KeepAspectRatio))
+        self.photoViewer.setPixmap(QPixmap(file_path).scaled(200,200,Qt.KeepAspectRatio))
+        print(dir(self.photoViewer))
+        self.resize(self.photoViewer.sizeHint())
+        #print(self.photoViewer.sizeHint())
+        print(self.photoViewer.size())
+
+        #print(self.photoViewer.size()[0])
+        print('PARENT')
+        print(self.parent())
+
        
 
 
@@ -109,10 +121,11 @@ class Ui_MainWindow(object):
         #self.imageWidget = QtWidgets.QWidget(self.frame)
         self.imageWidget = DragNDropBox() # change class as defined above
         self.imageWidget.setGeometry(QtCore.QRect(220, 230, 150, 150))
-        self.imageWidget.setAcceptDrops(True)
-        self.imageWidget.setAccessibleName("")
-        self.imageWidget.setAutoFillBackground(False)
-        self.imageWidget.setStyleSheet("border: 4px dashed #aaa;")
+        self.imageWidget.setGeometry(QtCore.QRect(220, 230, 150, 150))
+        #self.imageWidget.setAcceptDrops(True)
+        #self.imageWidget.setAccessibleName("")
+        #self.imageWidget.setAutoFillBackground(False)
+        #self.imageWidget.setStyleSheet("border: 4px dashed #aaa;")
         self.imageWidget.setObjectName("imageWidget")
         self.imageWidget.setParent(self.frame)
 
