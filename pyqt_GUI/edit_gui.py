@@ -7,12 +7,18 @@
 # WARNING! All changes made in this file will be lost!
 
 
+import datetime as dt
+import hashlib
+import os
+import pandas as pd
+from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+from practice_sched import Schedule
+import time
 
 class ImageLabel(QLabel):
     def __init__(self):
@@ -40,6 +46,8 @@ class DragNDropBox(QWidget):
         self.photoViewer = ImageLabel()
         mainLayout.addWidget(self.photoViewer)
         self.setLayout(mainLayout)
+        self.current_image = None
+        self.current_image_address = None
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasImage:
@@ -65,6 +73,8 @@ class DragNDropBox(QWidget):
     def set_image(self, file_path):
         self.photoViewer.setPixmap(QPixmap(file_path))
         self.resize(self.photoViewer.sizeHint())
+        self.current_image_address = file_path # set file path for saving
+        self.current_image = self.photoViewer.pixmap()
 
 
 class Ui_MainWindow(object):
@@ -153,6 +163,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.notesBox, self.cancelImageButton)
         MainWindow.setTabOrder(self.cancelImageButton, self.addImageButton)
 
+        #self.schedule = Schedule() # The main storage component
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
@@ -168,10 +180,12 @@ class Ui_MainWindow(object):
         self.addImageButton.clicked.connect(self.imageButtonClicked)
         self.cancelImageButton.clicked.connect(self.cancelImageButtonClicked)
         self.cancelButton.clicked.connect(self.cancelButtonClicked)
+        self.completeButton.clicked.connect(self.completeButtonClicked)
 
     def addButtonClicked(self):
         self.frame.show()
         self.topButtonFrame.hide()
+        #print(self.schedule.storage.iloc[0])
 
     def imageButtonClicked(self):
         self.addImageButton.hide()
@@ -199,10 +213,18 @@ class Ui_MainWindow(object):
 
     def completeButtonClicked(self):
         #TODO Connect to DB or Json
+        self.frame.hide()
         self.topButtonFrame.show()
         self.itemBox.setText("")  # clear any items added
         self.notesBox.setText("") # clear any notes added
-        pass
+        current_image = self.imageBox.current_image
+        print(dir(self.itemLabel))
+        print(self.itemBox.toPlainText())
+        print(self.itemBox.toPlainText())
+        #file_path = self.imageBox.current_image_address
+        #new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest() #<- trouble
+        #current_image.save(f'data/{new_name}.png',"PNG")
+        self.cancelImageButtonClicked() # clear the image
 
 if __name__ == "__main__":
     import sys
