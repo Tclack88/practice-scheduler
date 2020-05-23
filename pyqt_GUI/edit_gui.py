@@ -215,14 +215,13 @@ class Ui_MainWindow(object):
         #TODO Connect to DB or Json
         self.frame.hide()
         self.topButtonFrame.show()
-        self.itemBox.setText("")  # clear any items added
-        self.notesBox.setText("") # clear any notes added
+        item = self.itemBox.toPlainText() # save to variable
+        notes = self.notesBox.toPlainText()
+        self.itemBox.clear()  # clear any items added
+        self.notesBox.clear()
         current_image = self.imageBox.current_image
-        print(dir(self.itemLabel))
-        print(self.itemBox.toPlainText())
-        print(self.itemBox.toPlainText())
         #file_path = self.imageBox.current_image_address
-        #new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest() #<- trouble
+        #new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest()
         #current_image.save(f'data/{new_name}.png',"PNG")
         self.cancelImageButtonClicked() # clear the image
 
