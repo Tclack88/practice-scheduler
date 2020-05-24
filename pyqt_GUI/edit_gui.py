@@ -163,7 +163,9 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.notesBox, self.cancelImageButton)
         MainWindow.setTabOrder(self.cancelImageButton, self.addImageButton)
 
-        #self.schedule = Schedule() # The main storage component
+        self.schedule = Schedule() # The main storage component
+        self.mode = None # a flag to determine what "complete" button does
+                         # depending on if user clicks "practice" or "add"
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -181,11 +183,13 @@ class Ui_MainWindow(object):
         self.cancelImageButton.clicked.connect(self.cancelImageButtonClicked)
         self.cancelButton.clicked.connect(self.cancelButtonClicked)
         self.completeButton.clicked.connect(self.completeButtonClicked)
+        self.practiceButton.clicked.connect(self.practiceButtonClicked)
 
     def addButtonClicked(self):
         self.frame.show()
         self.topButtonFrame.hide()
-        #print(self.schedule.storage.iloc[0])
+        self.mode = 'add' # change functionality of complete button
+        self.count = 0 # start repetition count for new entries
 
     def imageButtonClicked(self):
         self.addImageButton.hide()
@@ -201,10 +205,12 @@ class Ui_MainWindow(object):
         self.imageBox = DragNDropBox()
         self.imageBox.setParent(self.frame)
         self.imageBox.setObjectName("imageBox")
+        self.imageBox.current_image = None # clear image label for storage
         self.gridLayout.addWidget(self.imageBox, 4, 2, 1, 2, QtCore.Qt.AlignVCenter)
         self.imageBox.hide()
 
     def cancelButtonClicked(self):
+        self.mode = None # reset behavior of "complete" button
         self.frame.hide()
         self.topButtonFrame.show()
         self.cancelImageButtonClicked()
@@ -215,15 +221,44 @@ class Ui_MainWindow(object):
         #TODO Connect to DB or Json
         self.frame.hide()
         self.topButtonFrame.show()
-        item = self.itemBox.toPlainText() # save to variable
+        task = self.itemBox.toPlainText() # save to variable
         notes = self.notesBox.toPlainText()
+        image = self.imageBox.current_image
+        count = self.count # 0 if "add", else loaded from practice item 
+        if self.image: # If not None
+            file_path = self.imageBox.current_image_address
+            new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest()
+            current_image.save(f'data/{new_name}.png',"PNG")
+        if self.mode == 'add':
+            self.schedule.add(task, notes, image)
+        elif self.mode == 'practice':
+            count += 1
+            self.practice_item.task = task
+            self.practice_item.notes = notes
+            self.practice_item.count = count
+            self.practice_item.image = new_name
+            self.schedule.iloc[self.pracice_item.index] = self.practice_item
+            self.schedule.save()
+
+        # reset fields
+        self.mode = None
+        self.count = 0 # Back to default 0
         self.itemBox.clear()  # clear any items added
         self.notesBox.clear()
-        current_image = self.imageBox.current_image
-        #file_path = self.imageBox.current_image_address
-        #new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest()
-        #current_image.save(f'data/{new_name}.png',"PNG")
         self.cancelImageButtonClicked() # clear the image
+
+    def practiceButtonClicked(self):
+        self.frame.show()
+        self.topButtonFrame.hide()
+        self.mode = 'practice'
+        self.practice_item = self.schedule.practice()
+        print('practice item:')
+        print(self.practice_item)
+        # load up the text and images
+        self.itemBox.setText(self.practice_item.task.to_string(index=False).strip().replace('\\n','\n'))
+        self.notesBox.setText(self.practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
+        self.count = self.practice_item['count']
+        # TODO load images if they exist
 
 if __name__ == "__main__":
     import sys

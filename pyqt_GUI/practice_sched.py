@@ -8,7 +8,7 @@ class Schedule():
     def __init__(self, storage=None):
         self.path = 'data/schedule.json'
         if os.path.isfile(self.path) == False:
-            self.storage = pd.DataFrame(columns=['task', 'count', 'time','notes'])
+            self.storage = pd.DataFrame(columns=['task', 'count', 'time','notes','image'])
             print("You currently have no practice items: let's add stuff now")
         else:
             self.storage = pd.read_json(self.path)
@@ -29,9 +29,9 @@ class Schedule():
     def now(self): # quick function to return 'now'
         return str(pd.to_datetime(dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
-    def add(self, task, note):
+    def add(self, task, note, image):
         self.storage = self.storage.append([{'task':task, 'count':1, 
-                            'time':self.now(), 'notes':note}],ignore_index=True)
+            'time':self.now(), 'notes':note, 'image':image}],ignore_index=True)
         self.save()
 
     def practice(self):
