@@ -225,6 +225,7 @@ class Ui_MainWindow(object):
         self.notesBox.clear() # clear any notes added
 
     def completeButtonClicked(self):
+        self.frame.setDisabled(True) # prevent multiple clicks while saving
         self.frame.hide()
         self.topButtonFrame.show()
         task = self.itemBox.toPlainText() # save to variable
@@ -256,7 +257,8 @@ class Ui_MainWindow(object):
         # reset fields
         self.mode = None
         self.count = 0 # Back to default 0
-        self.cancelImageButtonClicked() # clear the image
+        self.cancelButtonClicked() # clear the image and text entries
+        self.frame.setDisabled(False) # return control
 
     def practiceButtonClicked(self):
         self.frame.show()
