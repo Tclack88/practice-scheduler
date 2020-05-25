@@ -167,6 +167,9 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.notesBox, self.cancelImageButton)
         MainWindow.setTabOrder(self.cancelImageButton, self.addImageButton)
 
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("data/logo.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        MainWindow.setWindowIcon(icon)
         self.schedule = Schedule() # The main storage component
         self.mode = None # a flag to determine what "complete" button does
                          # depending on if user clicks "practice" or "add"
@@ -276,9 +279,8 @@ class Ui_MainWindow(object):
                 file_path = self.practice_item.image.to_string(index=False).strip()
                 abs_path = os.path.normpath(os.path.join(os.getcwd(), 
                                                         file_path))
-                fp = QtCore.QUrl(f'file://{sp}').toLocalFile()
+                fp = QtCore.QUrl(f'file://{abs_path}').toLocalFile()
                 self.imageBox.set_image(fp)
-                #self.imageBox.set_image(os.path.normpath(self.practice_item.image.to_string(index=False)))
 
 if __name__ == "__main__":
     import sys
