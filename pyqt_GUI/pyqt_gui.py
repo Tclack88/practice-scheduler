@@ -65,6 +65,10 @@ class DragNDropBox(QWidget):
         if event.mimeData().hasImage:
             event.setDropAction(Qt.CopyAction)
             file_path = event.mimeData().urls()[0].toLocalFile()
+            print('\n\n this just in:')
+            print(event.mimeData().urls())#[0].toLocalFile()
+            print(file_path)
+            print(type(file_path))
             self.set_image(file_path)
             event.accept()
         else:
@@ -214,37 +218,41 @@ class Ui_MainWindow(object):
         self.frame.hide()
         self.topButtonFrame.show()
         self.cancelImageButtonClicked()
-        self.itemBox.setText("")  # clear any items added
-        self.notesBox.setText("") # clear any notes added
+        self.itemBox.clear() # clear any items added
+        self.notesBox.clear() # clear any notes added
 
     def completeButtonClicked(self):
-        #TODO Connect to DB or Json
         self.frame.hide()
         self.topButtonFrame.show()
         task = self.itemBox.toPlainText() # save to variable
         notes = self.notesBox.toPlainText()
         image = self.imageBox.current_image
         count = self.count # 0 if "add", else loaded from practice item 
-        if self.image: # If not None
+        if image: # If not None
             file_path = self.imageBox.current_image_address
-            new_name = hashlib.md5(Image.open(file_path).tobytes()).hexdigest()
-            current_image.save(f'data/{new_name}.png',"PNG")
+            current_image = Image.open(file_path)
+            new_name = hashlib.md5(current_image.tobytes()).hexdigest()
+            image_address = f'data/{new_name}.png' # Add to item Json
+            current_image.save(image_address,"PNG")
+        else:
+            image_address = None # add to item Json
+
         if self.mode == 'add':
-            self.schedule.add(task, notes, image)
+            self.schedule.add(task, notes, image_address)
+            # TODO: there's a delay, prevent multiple button clicks
+            # or grey it out, or hide stuff immediately, etc.
         elif self.mode == 'practice':
             count += 1
             self.practice_item.task = task
             self.practice_item.notes = notes
             self.practice_item.count = count
-            self.practice_item.image = new_name
+            self.practice_item.image = image_address
             self.schedule.iloc[self.pracice_item.index] = self.practice_item
-            self.schedule.save()
 
+        self.schedule.save()
         # reset fields
         self.mode = None
         self.count = 0 # Back to default 0
-        self.itemBox.clear()  # clear any items added
-        self.notesBox.clear()
         self.cancelImageButtonClicked() # clear the image
 
     def practiceButtonClicked(self):
@@ -252,13 +260,25 @@ class Ui_MainWindow(object):
         self.topButtonFrame.hide()
         self.mode = 'practice'
         self.practice_item = self.schedule.practice()
-        print('practice item:')
-        print(self.practice_item)
-        # load up the text and images
-        self.itemBox.setText(self.practice_item.task.to_string(index=False).strip().replace('\\n','\n'))
-        self.notesBox.setText(self.practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
-        self.count = self.practice_item['count']
-        # TODO load images if they exist
+        if type(self.practice_item) is None:
+            print('Nothing to practice!')
+            #TODO pop up saying the same?
+            self.frame.hide()
+            self.topButtonFrame.show()
+        else:
+            # load up the text and images
+            self.itemBox.setText(self.practice_item.task.to_string(index=False).strip().replace('\\n','\n'))
+            self.notesBox.setText(self.practice_item.notes.to_string(index=False).strip().replace('\\n','\n'))
+            self.count = self.practice_item['count']
+            stored_image_addr = self.practice_item.image.to_string(index=False).strip()
+            if stored_image_addr != 'None':
+                self.imageButtonClicked()
+                file_path = self.practice_item.image.to_string(index=False).strip()
+                abs_path = os.path.normpath(os.path.join(os.getcwd(), 
+                                                        file_path))
+                fp = QtCore.QUrl(f'file://{sp}').toLocalFile()
+                self.imageBox.set_image(fp)
+                #self.imageBox.set_image(os.path.normpath(self.practice_item.image.to_string(index=False)))
 
 if __name__ == "__main__":
     import sys
