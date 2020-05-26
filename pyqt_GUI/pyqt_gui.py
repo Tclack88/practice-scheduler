@@ -224,8 +224,12 @@ class Ui_MainWindow(object):
         self.itemBox.clear() # clear any items added
         self.notesBox.clear() # clear any notes added
 
+
     def completeButtonClicked(self):
-        self.frame.setDisabled(True) # prevent multiple clicks while saving
+        #TODO: enable/disable not working :/
+        self.frame.setEnabled(False) # prevent multiple clicks while saving
+        self.topButtonFrame.setEnabled(False)
+
         self.frame.hide()
         self.topButtonFrame.show()
         task = self.itemBox.toPlainText() # save to variable
@@ -251,14 +255,15 @@ class Ui_MainWindow(object):
             self.practice_item.notes = notes
             self.practice_item.count = count
             self.practice_item.image = image_address
-            self.schedule.iloc[self.pracice_item.index] = self.practice_item
+            self.schedule.storage.iloc[self.practice_item.index] = self.practice_item
 
         self.schedule.save()
         # reset fields
         self.mode = None
         self.count = 0 # Back to default 0
         self.cancelButtonClicked() # clear the image and text entries
-        self.frame.setDisabled(False) # return control
+        self.frame.setEnabled(True) # return control
+        self.topButtonFrame.setEnabled(True)
 
     def practiceButtonClicked(self):
         self.frame.show()
