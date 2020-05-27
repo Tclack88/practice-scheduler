@@ -14,7 +14,7 @@ import pandas as pd
 from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys, os
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy, QMessageBox, QAction
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from practice_sched import Schedule
@@ -96,13 +96,13 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 640, 22))
         self.menubar.setObjectName("menubar")
-        self.menuInfo = QtWidgets.QMenu(self.menubar)
-        self.menuInfo.setObjectName("menuInfo")
+        self.menuFile = QtWidgets.QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menubar)
         #self.statusbar = QtWidgets.QStatusBar(MainWindow)
         #self.statusbar.setObjectName("statusbar")
         #MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuInfo.menuAction())
+        self.menubar.addAction(self.menuFile.menuAction())
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -186,11 +186,15 @@ class Ui_MainWindow(object):
         self.schedule = Schedule() # The main storage component
         self.mode = None # a flag to determine what "complete" button does
                          # depending on if user clicks "practice" or "add"
+        show_info_action = QAction(QtGui.QIcon('data/logo.png'),'Info')
+        show_info_action.triggered.connect(self.info)
+        self.menuFile.addAction(show_info_action)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.menuInfo.setTitle(_translate("MainWindow", "Info"))
+        self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.addButton.setText(_translate("MainWindow", "Add"))
         self.addButton.setShortcut("A")
         self.practiceButton.setText(_translate("MainWindow", "Practice"))
@@ -211,10 +215,21 @@ class Ui_MainWindow(object):
         self.cancelButton.clicked.connect(self.cancelButtonClicked)
         self.completeButton.clicked.connect(self.completeButtonClicked)
         self.practiceButton.clicked.connect(self.practiceButtonClicked)
-        print(dir(self.menuInfo))#.clicked.connect(self.info)
+        
+        #print(dir(self.menuInfo))#.clicked.connect(self.info)
 
     def info(self):
-        print('triggered')
+        info = QMessageBox()
+        info.setText("""This prectice scheduler is intended to hone muscle memory tasks. It will make reccomendations of what to practice randomly, but weighted toward less frequently practiced items. This is in contrast to spaced repetition programs which are better suited for memory tasks.
+
+        Keyboard shortcuts:
+        p           - Practice
+        a           - Add
+        Ctrl-c  - Complete
+        Ctrl-x  - Cancel
+        Ctrl-I  - Toggle Image on/off""")
+        info.exec_()
+
 
     def addButtonClicked(self):
         self.frame.show()
