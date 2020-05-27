@@ -12,12 +12,12 @@ import hashlib
 import os
 import pandas as pd
 from PIL import Image
+from practice_sched import Schedule
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy, QMessageBox, QAction
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from practice_sched import Schedule
 import time
 
 class ImageLabel(QLabel):
@@ -40,7 +40,6 @@ class ImageLabel(QLabel):
 class DragNDropBox(QWidget):
     def __init__(self):
         super().__init__()
-        #self.resize(400, 400)
         self.setAcceptDrops(True)
         mainLayout = QVBoxLayout()
         self.photoViewer = ImageLabel()
@@ -65,10 +64,6 @@ class DragNDropBox(QWidget):
         if event.mimeData().hasImage:
             event.setDropAction(Qt.CopyAction)
             file_path = event.mimeData().urls()[0].toLocalFile()
-            print('\n\n this just in:')
-            print(event.mimeData().urls())#[0].toLocalFile()
-            print(file_path)
-            print(type(file_path))
             self.set_image(file_path)
             event.accept()
         else:
@@ -99,9 +94,7 @@ class Ui_MainWindow(object):
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
         MainWindow.setMenuBar(self.menubar)
-        #self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        #self.statusbar.setObjectName("statusbar")
-        #MainWindow.setStatusBar(self.statusbar)
+
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -112,9 +105,11 @@ class Ui_MainWindow(object):
         self.formLayout.setObjectName("formLayout")
         self.addButton = QtWidgets.QPushButton(self.topButtonFrame)
         self.addButton.setObjectName("addButton")
+        self.addButton.setAutoDefault(True)
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.addButton)
         self.practiceButton = QtWidgets.QPushButton(self.topButtonFrame)
         self.practiceButton.setObjectName("practiceButton")
+        self.practiceButton.setAutoDefault(True)
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.practiceButton)
         self.verticalLayout.addWidget(self.topButtonFrame, 0, QtCore.Qt.AlignHCenter)
         self.frame = QtWidgets.QFrame(self.centralwidget)
@@ -129,42 +124,41 @@ class Ui_MainWindow(object):
         self.itemBox.setMaximumSize(QtCore.QSize(16777215, 30))
         self.itemBox.setInputMethodHints(QtCore.Qt.ImhNone)
         self.itemBox.setObjectName("itemBox")
+        self.itemBox.setTabChangesFocus(True)
         self.gridLayout.addWidget(self.itemBox, 1, 1, 1, 3)
         self.cancelImageButton = QtWidgets.QPushButton(self.frame)
         self.cancelImageButton.setMaximumSize(QtCore.QSize(30, 16777215))
         self.cancelImageButton.setObjectName("cancelImageButton")
+        self.cancelImageButton.setAutoDefault(True)
         self.gridLayout.addWidget(self.cancelImageButton, 4, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.notesBox = QtWidgets.QTextEdit(self.frame)
         sizePolicy.setHorizontalStretch(20)
         self.notesBox.setSizePolicy(sizePolicy)
         self.notesBox.setMaximumSize(QtCore.QSize(16777215, 200))
         self.notesBox.setObjectName("notesBox")
+        self.notesBox.setTabChangesFocus(True)
         self.gridLayout.addWidget(self.notesBox, 3, 1, 1, 3)
         self.notesLabel = QtWidgets.QLabel(self.frame)
         self.notesLabel.setObjectName("notesLabel")
         self.gridLayout.addWidget(self.notesLabel, 3, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.cancelButton = QtWidgets.QPushButton(self.frame)
         self.cancelButton.setObjectName("cancelButton")
+        self.cancelButton.setAutoDefault(True)
         self.gridLayout.addWidget(self.cancelButton, 0, 3, 1, 1, QtCore.Qt.AlignLeft)
         self.imageBox = DragNDropBox()
         self.imageBox.setParent(self.frame)
-        #self.imageBox.setMinimumSize(QtCore.QSize(200, 200))
-        #self.imageBox.setMaximumSize(QtCore.QSize(150, 150))
-        #self.imageBox.setBaseSize(QtCore.QSize(200,200))
-        #self.imageBox.baseSize(QtCore.QSize(200))
         self.imageBox.setObjectName("imageBox")
         self.gridLayout.addWidget(self.imageBox, 4, 2, 1, 2, QtCore.Qt.AlignVCenter)
         self.itemLabel = QtWidgets.QLabel(self.frame)
         self.itemLabel.setObjectName("itemLabel")
         self.gridLayout.addWidget(self.itemLabel, 1, 0, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignTop)
         self.addImageButton = QtWidgets.QPushButton(self.frame)
-        self.addImageButton.setAutoDefault(False)
-        self.addImageButton.setDefault(False)
-        self.addImageButton.setFlat(False)
         self.addImageButton.setObjectName("addImageButton")
+        self.addImageButton.setAutoDefault(True)
         self.gridLayout.addWidget(self.addImageButton, 4, 1, 1, 1, QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.completeButton = QtWidgets.QPushButton(self.frame)
         self.completeButton.setObjectName("completeButton")
+        self.completeButton.setAutoDefault(True)
         self.gridLayout.addWidget(self.completeButton, 0, 2, 1, 1, QtCore.Qt.AlignRight)
         self.verticalLayout.addWidget(self.frame)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -220,14 +214,17 @@ class Ui_MainWindow(object):
 
     def info(self):
         info = QMessageBox()
-        info.setText("""This prectice scheduler is intended to hone muscle memory tasks. It will make reccomendations of what to practice randomly, but weighted toward less frequently practiced items. This is in contrast to spaced repetition programs which are better suited for memory tasks.
+        info.setText("""This practice scheduler is intended to hone muscle memory tasks. It will make recommendations of what to practice randomly, but weighted toward less frequently practiced items. This is in contrast to spaced repetition programs which are better suited for memory tasks.
 
         Keyboard shortcuts:
         p           - Practice
         a           - Add
         Ctrl-c  - Complete
         Ctrl-x  - Cancel
-        Ctrl-I  - Toggle Image on/off""")
+        Ctrl-I  - Toggle Image on/off
+        
+project developer:    Trevor Clack (GitHub: Tclack88)
+last update:    May 2020""")
         info.exec_()
 
 
