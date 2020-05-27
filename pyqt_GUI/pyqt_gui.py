@@ -14,7 +14,7 @@ import pandas as pd
 from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys, os
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QSizePolicy, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from practice_sched import Schedule
@@ -92,6 +92,18 @@ class Ui_MainWindow(object):
         MainWindow.setAutoFillBackground(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 640, 22))
+        self.menubar.setObjectName("menubar")
+        self.menuInfo = QtWidgets.QMenu(self.menubar)
+        self.menuInfo.setObjectName("menuInfo")
+        MainWindow.setMenuBar(self.menubar)
+        #self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        #self.statusbar.setObjectName("statusbar")
+        #MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuInfo.menuAction())
+
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.topButtonFrame = QtWidgets.QFrame(self.centralwidget)
@@ -156,7 +168,6 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.completeButton, 0, 2, 1, 1, QtCore.Qt.AlignRight)
         self.verticalLayout.addWidget(self.frame)
         MainWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.addButton, self.practiceButton)
@@ -167,6 +178,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.notesBox, self.cancelImageButton)
         MainWindow.setTabOrder(self.cancelImageButton, self.addImageButton)
 
+        self.msg = QMessageBox()
+        self.msg.setText('Nothing new to practice for today')
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("data/logo.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
         MainWindow.setWindowIcon(icon)
@@ -177,20 +190,31 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.menuInfo.setTitle(_translate("MainWindow", "Info"))
         self.addButton.setText(_translate("MainWindow", "Add"))
+        self.addButton.setShortcut("A")
         self.practiceButton.setText(_translate("MainWindow", "Practice"))
+        self.practiceButton.setShortcut("P")
         self.cancelImageButton.setText(_translate("MainWindow", "x"))
+        self.cancelImageButton.setShortcut("Ctrl+I")
         self.notesLabel.setText(_translate("MainWindow", "Notes"))
         self.cancelButton.setText(_translate("MainWindow", "Cancel"))
+        self.cancelButton.setShortcut('Ctrl+X')
         self.itemLabel.setText(_translate("MainWindow", "Item"))
         self.addImageButton.setText(_translate("MainWindow", "+  image"))
+        self.addImageButton.setShortcut('Ctrl+I')
         self.completeButton.setText(_translate("MainWindow", "Complete"))
+        self.completeButton.setShortcut('Ctrl+C')
         self.addButton.clicked.connect(self.addButtonClicked)
         self.addImageButton.clicked.connect(self.imageButtonClicked)
         self.cancelImageButton.clicked.connect(self.cancelImageButtonClicked)
         self.cancelButton.clicked.connect(self.cancelButtonClicked)
         self.completeButton.clicked.connect(self.completeButtonClicked)
         self.practiceButton.clicked.connect(self.practiceButtonClicked)
+        print(dir(self.menuInfo))#.clicked.connect(self.info)
+
+    def info(self):
+        print('triggered')
 
     def addButtonClicked(self):
         self.frame.show()
@@ -226,10 +250,10 @@ class Ui_MainWindow(object):
 
 
     def completeButtonClicked(self):
-        #TODO: enable/disable not working :/
         self.frame.setEnabled(False) # prevent multiple clicks while saving
         self.topButtonFrame.setEnabled(False)
-
+        QApplication.processEvents() # Ensure the buttons are disabled
+                                     # before continuing
         self.frame.hide()
         self.topButtonFrame.show()
         task = self.itemBox.toPlainText() # save to variable
@@ -247,8 +271,6 @@ class Ui_MainWindow(object):
 
         if self.mode == 'add':
             self.schedule.add(task, notes, image_address)
-            # TODO: there's a delay, prevent multiple button clicks
-            # or grey it out, or hide stuff immediately, etc.
         elif self.mode == 'practice':
             count += 1
             self.practice_item.task = task
@@ -258,11 +280,12 @@ class Ui_MainWindow(object):
             self.schedule.storage.iloc[self.practice_item.index] = self.practice_item
 
         self.schedule.save()
-        # reset fields
+        # reset fields. Ensure all saves occur and no input is accepted
+        QApplication.processEvents()
         self.mode = None
         self.count = 0 # Back to default 0
         self.cancelButtonClicked() # clear the image and text entries
-        self.frame.setEnabled(True) # return control
+        self.frame.setEnabled(True) 
         self.topButtonFrame.setEnabled(True)
 
     def practiceButtonClicked(self):
@@ -270,9 +293,10 @@ class Ui_MainWindow(object):
         self.topButtonFrame.hide()
         self.mode = 'practice'
         self.practice_item = self.schedule.practice()
-        if type(self.practice_item) is None:
+        if self.practice_item is None:
             print('Nothing to practice!')
             #TODO pop up saying the same?
+            self.msg.exec_()
             self.frame.hide()
             self.topButtonFrame.show()
         else:
