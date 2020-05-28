@@ -1,7 +1,14 @@
 # Scheduler
 
-A dumb, simple terminal-based python script for determining what to practice next
-EDIT: moderate GUI added
+Read more about the project [on my blog](https://tclack88.github.io/blog/code/2020/05/27/gui.html)
+
+A simple terminal-based python script for determining what to practice next
+![terminal application](https://tclack88.github.io/blog/assets/gui/stage1.gif)
+
+EDIT: Tkinter GUI added
+![Tkinter application](https://tclack88.github.io/blog/assets/gui/stage2.gif)
+EDIT: PyQt QUI added
+![PyQt application](https://tclack88.github.io/blog/assets/gui/stage3.gif)
 
 ## some background
 
@@ -26,4 +33,4 @@ In other words, new things are given emphasis because they're not as "ingrained"
 ~~(NOTE: I wrote this before I learned pandas, so this can probably be vastly improved)~~
 ^(pandas incorporated in tkinter)
 
-[ ] Improved interface with image drag and drop capabilities (PyQt?)
+[x] Improved interface with image drag and drop capabilities (PyQt?)

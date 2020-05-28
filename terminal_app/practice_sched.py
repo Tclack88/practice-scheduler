@@ -69,7 +69,7 @@ def Practice():
             Menu()
             exit(0)
         if decision == 'c':
-            newnote = input("Enter notes to help for next time \n
+            newnote = input("Enter notes to help for next time \n \
                     (e.g. where you last left off): ")
             if newnote == '':
                 print("\nNo new notes entered, keeping old notes")
