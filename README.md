@@ -1,6 +1,6 @@
 # Scheduler
 
-![https://github.com/Tclack88/blog/blob/gh-pages/assets/gui/gui_logo.png](https://tclack88.github.io/blog/code/2020/05/27/gui.html)
+![https://github.com/Tclack88/blog/blob/gh-pages/assets/gui/gui_logo.png](https://github.com/Tclack88/blog/blob/gh-pages/assets/gui/gui_logo.png?raw=true)
 
 Read more about the project [on my blog](https://tclack88.github.io/blog/code/2020/05/27/gui.html)
 
