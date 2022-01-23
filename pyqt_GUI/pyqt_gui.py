@@ -31,7 +31,7 @@ class ImageLabel(QLabel):
                 border: 4px dashed #aaa
             }
         ''')
-        self.setScaledContents(True)
+        self.setScaledContents(False) # True stretches content to fill box
 
     def setPixmap(self, image):
         super().setPixmap(image)
@@ -70,7 +70,12 @@ class DragNDropBox(QWidget):
             event.ignore()
 
     def set_image(self, file_path):
-        self.photoViewer.setPixmap(QPixmap(file_path))
+        image = QPixmap(file_path)
+        width = image.size().width()
+        height = image.size().height()
+        self.photoViewer.setPixmap(image.scaled(width, height,
+            Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        #self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.resize(self.photoViewer.sizeHint())
         self.current_image_address = file_path # set file path for saving
         self.current_image = self.photoViewer.pixmap()
