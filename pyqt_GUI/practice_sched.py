@@ -36,10 +36,7 @@ class Schedule():
 
     def practice(self):
         today = pd.Timestamp.today().strftime('%Y-%m-%d')
-        #last_item = self.storage[self.storage.time == self.storage.time.max()]
-        # the above is an attempt to make it more general, i.e. don't assume
-        # the last item in the json is the most recent
-        last_item = self.storage.shape[0]
+        last_item = self.storage[self.storage.time == self.storage.time.max()].index[0]
         choices_df = self.storage[(self.storage.time < today) & (self.storage.index != last_item)]
         if choices_df.shape[0] < 2:
             return None
